@@ -22,14 +22,13 @@ def find_textboxes_recursively(layout_obj):
     return []
 
 
-laparams = LAParams(detect_vertical=True)
-resource_manager = PDFResourceManager()
-device = PDFPageAggregator(resource_manager, laparams=laparams)
-interpreter = PDFPageInterpreter(resource_manager, device)
-
-
-def extract_textboxes(pdf_file):
-    with open(pdf_file, 'rb') as f:
+def extract_textboxes(file_path):
+    laparams = LAParams(detect_vertical = True)
+    resource_manager = PDFResourceManager()
+    device = PDFPageAggregator(resource_manager,laparams=laparams)
+    interpreter = PDFPageInterpreter(resource_manager,device)
+    file = os.path.basename(file_path) 
+    with open(file, 'rb') as f:
         for page in PDFPage.get_pages(f, maxpages=1):
             interpreter.process_page(page)
             layout = device.get_result()
@@ -40,37 +39,35 @@ def extract_textboxes(pdf_file):
             for box in boxes:
                 if len(box) > 30:
                     pdftext = box.get_text().strip()
-                    g = open(text_name, 'w')
-                    g.writelines(pdftext)
-                    g.close()
+                    file_title,file_ext = os.path.splitext(file_path)
+                    dir_path, file_name = os.path.split(file_path)
+                    text_path = file_title + '.txt'
+                    with open(text_path, 'w') as g:
+                      g.write(pdftext)
 
 
-def check_dir(path):
-    dirs = []
-    files = []
-    for x in dirs:
-        if os.path.isdir(x):
-
-
-def get_dir(path):
-    path = sys.argv[1]
-    dirs = []
-    for directory in os.listdir(path):
-        path2 = os.path.join(path + directory)
-        if os.path.isdir(path2):
-            dirs.append(directory)
-            for dire in dirs:
-                if not os.path.isdir(dire):
-                    files.append(
 
 
 def find_all_files(directory):
     for root, dirs, files in os.walk(directory):
-        yield root
-        yield dirs
         for file in files:
-            yield os.path.join(root, file)
+            if os.path.exists(file):
+                yield os.path.join(root, file)
 
 def print_all_files(directory):
-    for file in find_all_files(directory):
-        print file
+    for file_path in find_all_files(directory):
+        if ".pdf" in file_path:
+            return file_path
+
+def find_all_dirs(directory):
+    for root, dirs,files in os.walk(directory):
+        for dir in dirs:
+            yield os.path.join(root,dir)
+
+def print_all_dirs(directory):
+    for dir_path in find_all_dirs(directory):
+        return dir_path
+
+extract_textboxes(print_all_files(sys.argv[1]))
+#extract_textboxes(sys.argv[1])
+#print_all_files(sys.argv[1])
