@@ -1,11 +1,29 @@
 # -*- coding: utf-8 -*-
+
+# import selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 import time
 from selenium.webdriver.support.ui import Select
+
+"""
+Usage:
+python sele_chrome.py
+
+
+"""
+
+
+
+
+
 #Config Sele_Chrome at DAIWA
+"""
+Do not change this config.
+If you use this code for NIKKO, please copy this file.
+"""
 url = "https://lzone.daiwa.co.jp/lzone/"
 username = "shinichiro.ueno@gci.jp"
 password = "gcigci"
@@ -15,9 +33,11 @@ period_to = "2017/04/28"
 file_type = 2
 
 #Set WebDriver Chrome
-driver = webdriver.Chrome(executable_path = '/home/gci/Downloads/chromedriver')
+driver = webdriver.Chrome(executable_path = '/home/gci/Downloads/chromedriver') #PATH
 
-#wait = WebDriverWait(driver,10)
+#wait = WebDriverWait(driver,10) #Prototype 
+
+
 #Run
 driver.get(url)
 print driver.current_url
