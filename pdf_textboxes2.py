@@ -9,7 +9,17 @@ from pdfminer.layout import LAParams, LTContainer, LTTextBox
 from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
 from pdfminer.pdfpage import PDFPage
 """
-find /home/2829902373/English/ \( -name ".DS_Store" -or -name "._*" \) -print -exec rm {} ";"
+Usage:
+
+python pdf_textboxes2.py directory-path
+
+Example:
+
+python pdf_textboxes2.py /home/gci/English/NIKKO
+
+
+if there are some meta-data, Use (in terminal) 
+$ find /home/gci/English/ \( -name ".DS_Store" -or -name "._*" \) -print -exec rm {} ";"
 """
 
 def find_textboxes_recursively(layout_obj):
@@ -32,7 +42,7 @@ def extract_textboxes(file_path):
     resource_manager = PDFResourceManager()
     device = PDFPageAggregator(resource_manager,laparams=laparams)
     interpreter = PDFPageInterpreter(resource_manager,device)
-    file = os.path.basename(file_path)
+    file = os.path.basename(file_path) 
     with open(file_path, 'rb') as f:
         for page in PDFPage.get_pages(f, maxpages=1):
             interpreter.process_page(page)
@@ -48,9 +58,11 @@ def extract_textboxes(file_path):
             for box in boxes:
                  pdftext = box.get_text().strip()
                  pdftext_utf8 = pdftext.encode('utf-8')
-                 if len(pdftext) > 350:
+                 if len(pdftext) > 350: #Paramator.Please change and try.
                     flag = True
                     """
+		    These are ideas for extracting NOISE-TEXT
+
                     if "SMBC NIKKO SECURITIES INC." in pdftext_utf8:
                         flag = False
                     if "APPENDIX FOR ANALYST" in pdftext_utf8:
@@ -66,8 +78,8 @@ def extract_textboxes(file_path):
                     g.write(pdftext_utf8)
             g.close()
 
-
-
+"""
+For Test.
 
 def find_all_files(directory):
     for root, dirs, files in os.walk(directory):
@@ -102,6 +114,13 @@ def get_files(directory):
     for file in files:
         file_path = str(directory) + "/" + str(file)
         yield file_path
+
+"""
+
+"""
+Main 
+
+"""
 
 path = sys.argv[1]
 dirs = []
